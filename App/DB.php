@@ -7,8 +7,8 @@ class DB {
 
 	public static function getDB()
 	{
-		if(self::$con == null){
-			self::$con = new \PDO("mysql:host=localhost; dbname=fund; charset=utf8", "root", "");
+		if(self::$con == null) {
+			self::$con = new \PDO("mysql:host=localhost; dbname=fund; charset=utf8mb4", "root", "");
 		}
 
 		return self::$con;
@@ -18,7 +18,7 @@ class DB {
 	{
 		$con = self::getDB();
 		$q = $con->prepare($sql);
-		$q = $q->execute($param);
+		$q->execute($param);
 		return $q->fetchAll(\PDO::FETCH_OBJ);
 	}
 
@@ -26,11 +26,11 @@ class DB {
 	{
 		$con = self::getDB();
 		$q = $con->prepare($sql);
-		$q = $q->execute($param);
+		$q->execute($param);
 		return $q->fetch(\PDO::FETCH_OBJ);
 	}
 
-	public static function query($sql, $param = [])
+	public static function query($sql, $param =[])
 	{
 		$con = self::getDB();
 		$q = $con->prepare($sql);

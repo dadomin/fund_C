@@ -9,6 +9,6 @@ use Damin\Route;
 require(__ROOT . "/autoload.php");
 require(__ROOT . "/web.php");
 
-$url = if(isset($_GET['url'])) ? "/" . $_GET['url'] : "/";
+$url = isset($_GET['url']) ? "/" . $_GET['url'] : "/";
 
-Rotue::route($url);
+Route::route($url);

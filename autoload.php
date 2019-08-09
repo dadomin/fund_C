@@ -1,6 +1,6 @@
 <?php
 
-function myLoader($name) {
+function myLoader($name){
 	$namespace = "Damin";
 	$baseDir = "App";
 

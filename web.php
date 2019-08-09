@@ -1,6 +1,6 @@
 <?php
 
-use Damin\Route;
+use Damin\Route;;
 
 Route::get("/", "MainController@index");
-Route::Get("/", "MainController@index");
+Route::get("/index", "MainController@index");

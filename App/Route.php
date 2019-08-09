@@ -8,7 +8,7 @@ class Route {
 
 	public static function route($url)
 	{
-		foreach(self::${ $_SERVER['REQUEST_METHOD'] } as $req) {
+		foreach(self::${ $_SERVER['REQUEST_METHOD'] } as $req){
 			if($req[0] == $url){
 				$actions = explode("@", $req[1]);
 				$cName = "\\Damin\\Controller\\" . $actions[0];
