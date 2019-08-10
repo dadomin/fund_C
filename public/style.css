@@ -1011,6 +1011,25 @@ footer > .footer-under > p {
 	max-width: 400px
 }
 
+/*C모듈*/
+.blueline {
+	border: 1px solid #2292d1;
+}
+.redline {
+	border: 1px solid #ff0b11;
+}
+.bluebtn {
+	border: 1px solid #2292d1;
+	background-color: #fff;
+	color: #2292d1;
+	cursor: pointer;
+}
+.redbtn {
+	border: 1px solid #ff0b11;
+	background-color: #fff;
+	color: #ff0b11;
+	cursor: pointer;
+}
 
 /*반응형*/
 @media (max-width: 480px) {

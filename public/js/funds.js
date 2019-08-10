@@ -11,8 +11,33 @@ class Funds {
 			let div = document.createElement("div");
 			div.classList.add("fund");
 			div.innerHTML = this.fundTemp(x, app);
+			if(this.user === undefined || this.user == null || this.user == ""){
+				div.querySelector(".go-fund").classList.add("dn");
+			}else {
+				div.querySelector(".go-fund").classList.remove("dn");
+			}
+			let status = div.querySelector(".fund-status");
+			if(x.owner == this.user.nickname){
+				div.classList.add("blueline");
+				if(parseInt(x.current) >= parseInt(x.total)){
+					status.classList.add("bluebtn");
+					status.innerHTML = "완료";
+					status.addEventListener("click", ()=>{
+						location.href = "/fund/business?number=" + x.number;
+					});
+				}
+			}
 			if(new Date(x.endDate) < new Date()){
-				div.querySelector(".fund-status").innerHTML = "모집완료";
+				status.innerHTML = "모집완료";
+				if(x.owner == this.user.nickname && x.current < x.total){
+					div.classList.remove("blueline");
+					div.classList.add("redline");
+					status.classList.add("redbtn");
+					status.innerHTML = "모집해제";
+					status.addEventListener("click", ()=>{
+						location.href = "/fund/remove?number=" + x.number;
+					});
+				}
 			}
 			form.append(div);
 			let canvas = div.querySelector("canvas");
@@ -58,7 +83,7 @@ class Funds {
 					<div>
 						<h3>펀드등록자</h3>
 						<div class="line50"></div>
-						<p>${owner}</p>
+						<p class="owner">${owner}</p>
 					</div>
 				</div>
 			</div>
@@ -72,6 +97,7 @@ class Funds {
 	}
 
 	makeFundup(x, app) {
+		console.log(this.user);
 		app.drawed = false;
 		app.signStatus = true;
 		let back = document.createElement("div");
@@ -228,7 +254,7 @@ class Funds {
 				</div>
 				<div class="up-box">
 					<div class="up-left">펀드등록자</div>
-					<span><a href="/profile?email${x.cnt}" class="a">${x.nick}</a></span>
+					<span><a href="/profile?email=${x.cnt}" class="a">${x.nick}</a></span>
 				</div>
 				<div class="up-inv-title">
 					<h3>투자자목록</h3>

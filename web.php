@@ -15,3 +15,5 @@ Route::get("/logout", "LoginController@logout");
 Route::get("/profile", "ProfileController@index");
 
 Route::get("/fund", "FundController@index");
+Route::get("/fund/business", "FundController@business");
+Route::get("/fund/remove", "FundController@remove");
