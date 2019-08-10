@@ -629,6 +629,34 @@ footer > .footer-under > p {
 	position: relative;
 }
 
+/*로그인*/
+
+#fund-login {
+	width: 100%;
+	height: 600px;
+	background-image: url("/images/background.png");
+	background-size: cover;
+	background-position: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.login {
+	width: 500px;
+	height: 400px;
+	background-color: #fff;
+	box-shadow: 0px 0px 15px rgba(0,0,0,.1);
+	border-radius: 12px;
+	padding: 20px 70px;
+	position: relative;
+}
+
+.a {
+	color: #2292d1;
+	font-weight: bold;
+	cursor: pointer;
+}
 
 /*투자자목록*/
 #fund-investor {
@@ -901,6 +929,88 @@ footer > .footer-under > p {
 	align-items: center;
 	text-align: center;
 }
+
+.button {
+	background-color: #fff;
+	border: 1px solid #2292d1;
+	border-radius: 5px;
+	padding: 5px 10px; 
+}
+
+/*프로필*/
+
+#profile {
+	width: 100%;
+	margin: 50px 0;
+}
+
+.profile_title {
+	width: 100%;
+	margin-bottom: 30px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+#profile .line100 {
+	margin: 15px auto;
+}
+#profile h2 {
+	color: #002758;
+	font-size: 32px;
+	font-weight: 400;
+}
+.profile_box {
+	width: 80%;
+	margin: 30px auto;
+	height: auto;
+	padding: 30px;
+	background-color: #fff;
+	border-radius: 12px;
+	box-shadow: 0px 0px 12px rgba(0,0,0,0.1);
+	display: flex;
+	flex-direction: column;
+}
+.profile_box_title {
+	width: 95%;
+	margin: 0 auto;
+	margin-bottom: 12px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #ddd;
+	position: relative;
+}
+.profile_box_title > h3 {
+	color: #2292d1;
+	font-weight: 400;
+	font-size: 24px;
+}
+.profile_box_title > span {
+	position: absolute;
+	right: 0;
+	bottom: 10px;
+	color: #2292d1;
+	 font-size: 18px; 
+}
+.profile_notice {
+	width: 80%;
+	margin: 10px auto;
+}
+.profile_left {
+	float: left;
+	color: #002758;
+	font-size: 18px;
+}
+.profile_left > span {
+	color: #2292d1;
+}
+.profile_right {
+	float: right;
+	color: #555;
+	font-size: 16px;
+	max-width: 400px
+}
+
 
 /*반응형*/
 @media (max-width: 480px) {

@@ -12,6 +12,8 @@
 	<script src="/js/script.js"></script>
 </head>
 <body>
+
+	<div id="toast-back"></div>
 	
 	<header>
 		<div class="size">
@@ -20,19 +22,27 @@
 			</a>
 			<img src="/images/logo-2.png" alt="logo-2">
 			<ul id="login-menu">
-				<li><a href="/login" id="login">로그인</a></li>
-				<li><i class="fas fa-caret-right"></i></li>
-				<li><a href="/register" id="register">회원가입</a></li>
-				<li><i class="fas fa-caret-right"></i></li>
-				<li><a href="/master" id="master">관리자</a></li>
+				<?php if(isset($_SESSION['user'])) : ?>
+					<li><a href="/logout" data-target="login" class="button">로그아웃</a></li>
+				<?php else :?>
+					<li><a href="/login" data-target="login">로그인</a></li>
+					<li><i class="fas fa-caret-right"></i></li>
+					<li><a href="/register" data-target="register">회원가입</a></li>
+					<li><i class="fas fa-caret-right"></i></li>
+					<li><a href="/master" data-target="master">관리자</a></li>
+				<?php endif; ?>
 			</ul>
-			<p class="des">안녕하세요, 킥스타터에 오신것을 환영합니다!</p>
+			<?php if(isset($_SESSION['user'])) : ?>
+				<p class="des"><a href="/profile?email=<?=$_SESSION['user']->email ?>" class="a"><?= $_SESSION['user']->nickname ?></a>님의 보유금액은 <?= number_format($_SESSION['user']->money) ?>원입니다.</p>
+			<?php else : ?>	
+				<p class="des">안녕하세요, 킥스타터에 오신것을 환영합니다!</p>
+			<?php endif; ?>
 		</div>
 	</header>
 
 	<ul id="menu-bar">
-		<li><a href="/index" id="main">메인페이지</a></li>
-		<li><a href="/adapt" id="adapt">펀드등록</a></li>
-		<li><a href="/fund" id="fund">펀드보기</a></li>
-		<li><a href="/investor" id="investor">투자자목록</a></li>
+		<li><a href="/index" data-target="main">메인페이지</a></li>
+		<li><a href="/adapt" data-target="adapt">펀드등록</a></li>
+		<li><a href="/fund" data-target="fund">펀드보기</a></li>
+		<li><a href="/investor" data-target="investor">투자자목록</a></li>
 	</ul>

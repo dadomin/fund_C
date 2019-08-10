@@ -1,5 +1,5 @@
 class App {
-	constructor(){
+	constructor(r){
 
 		// 서명
 		this.drawed = false;
@@ -7,27 +7,33 @@ class App {
 		this.prevX = null;
 		this.prevY = null;
 		this.signStatus = true;
+		
+		this.fundlist = [];
+		this.highlist = [];
+		this.invlist = [];
 
-		this.navlist = document.querySelectorAll("#menubar > li > a");
-		this.navlist2 = document.querySelectorAll("#login-menu > li > a");
-		let now = window.location.href;
-		now = now.substring(7, now.length);
-		now = now.split("/")[1];
-		this.navlist.forEach((e)=>{
-			e.classList.remove("click");
-			if(e.dataset.target == now){
-				e.classList.add("click");
-			}
+		r.forEach((e)=>{
+			this.fundlist.push(new Fund(e.number, e.name, e.endDate, e.total, e.current, e.investorList));
+			this.highlist.push(new Fund(e.number, e.name, e.endDate, e.total, e.current, e.investorList));
+			e.investorList.forEach((x)=>{
+				this.invlist.push(new Investor(e.number, e.name, e.total, e.current, x.email, x.pay, x.datetime));
+			});
 		});
-		this.navlist2.forEach((e)=>{
-			e.classList.remove("click");
-			if(e.dataset.target == now){
-				e.classList.add("click");
-			}
-		});
-		if(now == "") {
-			document.querySelector("#menu-bar > li:nth-child(1) > a").classList.add("click");
+
+		let clicking = document.getElementsByClassName("click")[0].innerHTML;
+		if(clicking == "메인페이지"){
+			this.mainLoader();
+		}else if(clicking == "펀드등록"){
+			this.adaptLoader();
+		}else if(clicking == "펀드보기"){
+			this.fundLoader();
+		}else if(clicking == "투자자목록"){
+			this.investorLoader();
+		}else if(clicking == "회원가입") {
+			this.registerLoader();
 		}
+
+		console.log(clicking);
 	}
 
 	toast(msg) {
@@ -56,6 +62,25 @@ class App {
 
 	remove(e) {
 		e.parentNode.removeChild(e);
+	}
+
+	mainLoader() {
+		this.highlist = this.highlist.sort((a,b) => (b.current / b.total) - (a.current / a.total));
+		this.highlist = this.highlist.filter(x => new Date(x.endDate) > new Date());
+		
+		let form = document.querySelector(".ranking-form");
+		for(let i = 0; i < 4; i++){
+			let div = document.createElement("div");
+			div.classList.add("ranking");
+			div.innerHTML = this.mainRanking(this.highlist[i]);
+			let canvas = div.querySelector("canvas");
+			this.makeGraph(canvas, this.highlist[i]);
+			form.append(div);
+			let btn = div.querySelector("button");
+			btn.addEventListener("click", ()=>{
+				this.makePopup(this.highlist[i]);	
+			});
+		}
 	}
 
 	makePopup(x) {
@@ -121,6 +146,30 @@ class App {
 
 				</div>
 			</div>
+		`;
+		return temp;
+	}
+
+	mainRanking(x) {
+		let name = this.check(x.name, 13);
+		let current = parseInt(x.current).toLocaleString();
+		let temp = `
+			<canvas width="240" height="200"></canvas>
+			<h3>${x.number}</h3>
+			<h2>${name}</h2>
+			<div class="rank-div">
+				<div class="rank-left">달성율</div>
+				<span>${x.current / x.total * 100}%</span>
+			</div>
+			<div class="rank-div">
+				<div class="rank-left">모집마감일</div>
+				<span>${x.endDate}</span>
+			</div>
+			<div class="rank-div">
+				<div class="rank-left">현재금액</div>
+				<span>${current}원</span>
+			</div>
+			<button>상세보기</button>
 		`;
 		return temp;
 	}
@@ -199,6 +248,78 @@ class App {
 
 		ctx.fillStyle = "#2292d1";
 		ctx.fillRect(0, 0, (now / total) * w,  h);
+	}
+
+	adaptLoader() {
+		// 펀드번호
+		let num = this.fundlist.length + 1;
+		num = "000" + num;
+		num = "A" + num.substring(num.length, num.length-4);
+		document.querySelector(".adapt-number").value = num;
+
+		let name = document.querySelector(".adapt-name");
+		let endDate = document.querySelector(".adapt-endDate");
+		let total = document.querySelector(".adapt-total");
+		let des = document.querySelector(".adapt-des");
+		let file = document.querySelector(".adapt-file");
+
+		name.addEventListener("focusout", (e)=>{
+			this.checkword(e.target, "창업펀드명이");
+		});
+		endDate.addEventListener("focusout", (e)=>{
+			this.checkDate(e.target, "모집마감일이");
+		});
+		total.addEventListener("focusout", (e)=>{
+			this.checkNum(e.target, "모집금액이");
+		});
+		des.addEventListener("focusout", (e)=>{
+			this.checkDes(e.target);
+		});
+		file.addEventListener("change", (e)=>{
+			this.checkFile(e.target);
+		});
+
+		document.querySelector(".adapt-done").addEventListener("click", (e)=>{
+			this.checkword(name, "창업펀드명이");
+			this.checkDate(endDate, "모집마감일이");
+			this.checkNum(total, "모집금액이");
+			this.checkDes(des);
+			this.checkNull(file, "펀드이미지가");
+			let ep = e.target.parentNode;
+			console.log(ep);
+			let warning = ep.getElementsByClassName("warning");
+			if(warning.length == 0){
+				this.toast("펀드를 성공적으로 등록하였습니다.");
+			}
+			name.value = "";
+			endDate.value = "";
+			total.value = "";
+			des.value = "";
+			file.value = "";
+		});
+	}
+
+	fundLoader() {
+		$("#fcnt").text(this.fundlist.length);
+
+		let form = document.querySelector(".fund-form");
+		this.fundlist.forEach((x)=>{
+			let div = document.createElement("div");
+			div.classList.add("fund");
+			div.innerHTML = this.fundTemp(x);
+			if(new Date(x.endDate) < new Date()){
+				div.querySelector(".fund-status").innerHTML = "모집완료";
+			}
+			form.append(div);
+			let canvas = div.querySelector("canvas");
+			this.makeGraph(canvas, x);
+			div.querySelector(".go-look").addEventListener("click", ()=>{
+				this.makePopup(x);
+			});
+			div.querySelector(".go-fund").addEventListener("click", ()=>{
+				this.makeFundup(x);
+			});
+		});
 	}
 
 	makeFundup(x) {
@@ -452,6 +573,77 @@ class App {
 		return temp;
 	}
 
+	investorLoader() {
+		let form = document.querySelector(".investors");
+		this.invlist = this.invlist.sort((a,b) => new Date(b.datetime) - new Date(a.datetime));
+		for(let i = 0; i < this.invlist.length; i++){
+			for(let j = 0; j < i; j++){
+				let invi = this.invlist[i];
+				let invj = this.invlist[j];
+				if(invi.number == invj.number && invi.email == invj.email){
+					if(new Date(invi.datetime) > new Date(invj.datetime)){
+						invi.pay += invj.pay;
+						this.invlist.splice(j, 1);
+					}else {
+						invj.pay += invi.pay;
+						this.invlist.splice(i, 1);
+					}
+				}
+			}
+		}
+		$("#icnt").text(this.invlist.length);
+		this.invlist.forEach((x)=>{
+			let div = document.createElement("div");
+			div.classList.add("investor");
+			let name = this.check(x.name, 11);
+			let pay = parseInt(x.pay).toLocaleString();
+			div.innerHTML = `
+				<div>${x.number}</div>
+				<div>${name}</div>
+				<div>${x.email}</div>
+				<div>${pay}원</div>
+				<div><canvas width="120" height="30"></canvas>${Math.floor(x.pay / x.total * 100)}%</div>
+				<div>${x.datetime}</div>
+			`;
+			let canvas = div.querySelector("canvas");
+			this.makeLine(canvas, x);
+			form.append(div);
+		});
+	}
+
+	registerLoader() {
+		let email = document.querySelector(".register-email");
+		let nick = document.querySelector(".register-nick");
+		let pass = document.querySelector(".register-pass");
+		let repass = document.querySelector(".register-repass");
+
+		email.addEventListener("focusout", (e)=>{
+			this.checkEmail(e.target);
+		});
+		nick.addEventListener("focusout", (e)=>{
+			this.checkNull(e.target, "이름이");
+		});
+		pass.addEventListener("focusout", (e)=>{
+			this.checkPass(e.target);
+		});
+		repass.addEventListener("focusout",(e)=>{
+			this.checkRepass(e.target, pass);
+		});
+
+		document.querySelector(".register-done").addEventListener("click",(e)=>{
+			this.checkEmail(email);
+			this.checkNull(nick, "이름이");
+			this.checkPass(pass);
+			this.checkRepass(repass, pass);
+
+			let ep = e.target.parentNode;
+			let warning = ep.getElementsByClassName("warning");
+			if(warning.length == 0){
+				this.toast("회원가입 성공");
+			}
+		});
+	}
+
 	checkEmail(x){
 		this.checkNull(x, "이메일이");
 		if($(x).hasClass("warning") == true){
@@ -492,4 +684,10 @@ class App {
 			x.classList.remove("warning");
 		}
 	}
+}
+
+window.onload = function(){
+	$.getJSON('/js/fund.json', function(result){
+		let app = new App(result);
+	})
 }

@@ -20,3 +20,9 @@
 			<!-- 이곳에 펀드랭킹이 들어옵니다. -->
 		</div>
 	</section>
+
+	<script>
+		let fund_list = JSON.parse(`<?= json_encode($fund) ?>`);
+		let invest_list = JSON.parse(`<?= json_encode($investor) ?>`);
+	</script>
+	<script src="/js/main.js"></script>
