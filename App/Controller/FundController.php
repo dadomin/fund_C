@@ -70,4 +70,33 @@ class FundController extends MasterController {
 
 		DB::msgAndBack("해당펀드가 성공적으로 모집해제 되었습니다.");	
 	}
+
+	public function invest(){
+		$user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
+
+		if($user == null){
+			DB::msgAndBack("사용권한이 없습니다.");
+			exit;
+		}
+		$num = $_GET['num'];
+		$pay = $_GET['pay'];
+
+		$sql1 = "UPDATE `fundlist` SET `current` =`current` + ? WHERE `number` = ?";
+		$sql2 = "SELECT * FROM `investors` WHERE `fundnumber` = ? AND `email` = ?";
+		$sql3 = "UPDATE `investors` SET `pay` = `pay` + ?, `datetime` = ? WHERE `fundnumber` = ? AND `email` = ?";
+		$sql4 = "INSERT INTO `investors`(`fundnumber`, `email`,`nickname`, `pay`, `datetime`) VALUES (?, ?, ?, ?, ?)";
+		$sql5 = "UPDATE `users` SET `money` = `money` - ? WHERE `email` = ?";
+
+		$list5 = DB::query($sql5,[$pay, $user->email]);
+
+		$list1 = DB::query($sql1, [$pay, $num]);
+		$list2 = DB::fetch($sql2, [$num, $user->email]);
+		$now = date("Y-m-d H:i:s");
+		if($list2){
+			$list3 = DB::query($sql3, [$pay, $now, $num, $user->email]);
+		}else {
+			$list4 = DB::query($sql4, [$num, $user->email, $user->nickname, $pay, $now]);
+		}
+		DB::msgAndBack("해당펀드에 성공적으로 투자 되었습니다");
+	}
 }

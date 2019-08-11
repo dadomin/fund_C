@@ -3,7 +3,11 @@
 		<div class="size">
 			
 			<div class="profile_title">
-				<h2>내 정보</h2>
+				<?php if($_SESSION['user']->email == $_GET['email']) : ?>
+					<h2>내 정보</h2>
+				<?php else : ?>
+					<h2>회원 정보</h2>
+				<?php endif; ?>
 				<div class="line100"></div>
 				<p>킥스타터가 여러분의 정보를 안전하게 보호해드립니다.</p>
 			</div>

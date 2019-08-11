@@ -32,7 +32,9 @@
 					<li><a href="/master" data-target="master">관리자</a></li>
 				<?php endif; ?>
 			</ul>
-			<?php if(isset($_SESSION['user'])) : ?>
+			<?php if(isset($_SESSION['user']) && $_SESSION['user']->email == "admin") : ?>
+				<p class="des"><a href="/admin" class="a"><?= $_SESSION['user']->nickname ?></a>님, 행복한 하루 되세요.</p>	
+			<?php elseif(isset($_SESSION['user'])) : ?>
 				<p class="des"><a href="/profile?email=<?=$_SESSION['user']->email ?>" class="a"><?= $_SESSION['user']->nickname ?></a>님의 보유금액은 <?= number_format($_SESSION['user']->money) ?>원입니다.</p>
 			<?php else : ?>	
 				<p class="des">안녕하세요, 킥스타터에 오신것을 환영합니다!</p>

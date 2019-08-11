@@ -11,25 +11,27 @@ class Funds {
 			let div = document.createElement("div");
 			div.classList.add("fund");
 			div.innerHTML = this.fundTemp(x, app);
+			let status = div.querySelector(".fund-status");
+
+			if(new Date(x.endDate) < new Date()){
+				status.innerHTML = "모집완료";
+			}
 			if(this.user === undefined || this.user == null || this.user == ""){
 				div.querySelector(".go-fund").classList.add("dn");
 			}else {
 				div.querySelector(".go-fund").classList.remove("dn");
-			}
-			let status = div.querySelector(".fund-status");
-			if(x.owner == this.user.nickname){
-				div.classList.add("blueline");
-				if(parseInt(x.current) >= parseInt(x.total)){
-					status.classList.add("bluebtn");
-					status.innerHTML = "완료";
-					status.addEventListener("click", ()=>{
-						location.href = "/fund/business?number=" + x.number;
-					});
+				if(x.owner == this.user.nickname){
+					div.classList.add("blueline");
+					if(parseInt(x.current) >= parseInt(x.total)){
+						status.classList.add("bluebtn");
+						status.innerHTML = "완료";
+						status.addEventListener("click", ()=>{
+							location.href = "/fund/business?number=" + x.number;
+						});
+					}
 				}
-			}
-			if(new Date(x.endDate) < new Date()){
-				status.innerHTML = "모집완료";
-				if(x.owner == this.user.nickname && x.current < x.total){
+
+				if(x.owner == this.user.nickname && x.current < x.total && new Date(x.endDate) < new Date()){
 					div.classList.remove("blueline");
 					div.classList.add("redline");
 					status.classList.add("redbtn");
@@ -145,12 +147,14 @@ class Funds {
 			let email = ep.querySelector(".fundup-email");
 			let pay = ep.querySelector(".fundup-pay");
 			let canvas = ep.querySelector("canvas");
-			app.checkword(email, "투자자명이");
+			app.checkNull(email, "투자자명이");
 			app.checkNum(pay, "투자금액이");
 			app.checkSign(canvas);
 			let warning = ep.getElementsByClassName("warning");
 			if(warning.length == 0){
-				app.toast("해당펀드에 성공적으로 투자되었습니다."); 
+				app.toast("해당펀드에 성공적으로 투자되었습니다.");
+				let num = ep.querySelector(".fundup-number").innerHTML;
+				location.href = "/fund/invest?num=" + num + "&pay=" + pay.value;
 				app.remove(ep.parentNode);
 			}
 		});
@@ -163,7 +167,7 @@ class Funds {
 				<span class="close-pop">&times</span>
 				<div class="up-box">
 					<div class="up-left">펀드번호</div>
-					<span>${x.number}</span>
+					<span class="fundup-number">${x.number}</span>
 				</div>
 				<div class="up-box">
 					<div class="up-left">창업펀드명</div>
@@ -218,7 +222,7 @@ class Funds {
 			div.classList.add("up-inv");
 			let pay = parseInt(i[j].pay).toLocaleString();
 			div.innerHTML = `
-				<div>${i[j].email}</div>
+				<div>${i[j].nickname}</div>
 				<div>${pay}원</div>
 			`
 			form.append(div);

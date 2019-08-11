@@ -1198,4 +1198,15 @@ footer > .footer-under > p {
 		height: 200px;
 		flex-direction: column;
 	}
+
+	/*프로필*/
+	.profile_box {
+		width: 95%;
+	}
+	.profile_notice {
+		width: 100%;
+	}
+	.profile_right {
+		max-width: 200px;
+	}
 }

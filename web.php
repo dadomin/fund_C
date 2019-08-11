@@ -17,3 +17,11 @@ Route::get("/profile", "ProfileController@index");
 Route::get("/fund", "FundController@index");
 Route::get("/fund/business", "FundController@business");
 Route::get("/fund/remove", "FundController@remove");
+Route::get("/fund/invest", "FundController@invest");
+
+Route::get("/adapt", "AdaptController@index");
+Route::post("/adapt/ok", "AdaptController@ok");
+
+Route::get("/investor", "InvestorController@index");
+
+Route::get("/admin", "AdminController@index");
